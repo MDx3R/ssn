@@ -1,0 +1,89 @@
+[project]
+name = "ssn"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "MDx3R",email = "nationmdxr@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "ssn", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+src = ["src/ssn"]
+include = ["*.py", "*.pyi"]
+exclude = ["build", "dist", ".venv", ".git", "__pycache__"]
+fix = true
+
+[tool.ruff.lint]
+select = [
+  "E",      # ошибки стиля (flake8) 
+  "F",      # синтаксические ошибки
+  "I",      # сортировка импортов (isort)
+  "B",      # баги (flake8-bugbear)
+  "C",      # complexity
+  "D",      # docstrings (pydocstyle)
+  "N",      # pep8-naming (имена переменных, классов)
+  "UP",     # pyupgrade (новый синтаксис)
+  "C90",    # McCabe (сложность)
+  "PL",     # pylint совместимость
+  "PT",     # типы (частично mypy)
+  "RUF",    # собственные правила Ruff
+  "SLF001", # private member access
+  "FAST001",# FastAPI
+  "FAST002",
+  "FAST003",
+]
+ignore = [
+    "D203", 
+    "D213", 
+    "E501", 
+    "D100", # docstrings
+    "D101", 
+    "D102", 
+    "D103", 
+    "D104", 
+    "D105", 
+    "D106", 
+    "D107",
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["ssn"]
+lines-after-imports = 2
+
+[tool.mypy]
+mypy_path = "src"
+python_version = 3.11
+strict = true
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+explicit_package_bases = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disable_error_code = ["no-untyped-def", "misc", "no-any-unimported"]
+
+[[tool.mypy.overrides]]
+module = ["yaml.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src", "tests"]
