@@ -47,7 +47,9 @@ class RawPrimitiveType(TypedDict):
 
 
 RawTypeRef = RawPrimitiveType
-RawTypeDef = RawObjectType | RawArrayType | RawEnumType | RawPrimitiveType | RawTypeRef
+RawTypeDef = (
+    RawObjectType | RawArrayType | RawEnumType | RawPrimitiveType | RawTypeRef | str
+)
 
 
 class RawSchema(TypedDict):

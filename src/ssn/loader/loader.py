@@ -50,6 +50,9 @@ def load_type_ref(raw: RawTypeRef) -> TypeRef:
 
 
 def load_type_expr(raw: RawTypeDef) -> TypeExpr:
+    if isinstance(raw, str):
+        return TypeRef(raw)
+
     match raw["type"]:
         case "object":
             return load_object_expr(raw)
@@ -107,6 +110,9 @@ def load_primitive_type(name: str, raw: RawPrimitiveType) -> TypeDef:
 
 
 def load_type(name: str, raw: RawTypeDef) -> TypeDef:
+    if isinstance(raw, str):
+        return TypeDef(name=name, expr=load_type_expr(raw))
+
     match raw["type"]:
         case "object":
             return load_object_type(name, raw)
