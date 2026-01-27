@@ -34,7 +34,7 @@ def load_object_expr(raw: RawObjectType) -> ObjectTypeExpr:
 
 
 def load_array_expr(raw: RawArrayType) -> ArrayTypeExpr:
-    return ArrayTypeExpr(items=TypeRef(raw["items"]))
+    return ArrayTypeExpr(items=load_type_expr(raw["items"]))
 
 
 def load_enum_expr(raw: RawEnumType) -> EnumTypeExpr:
@@ -68,15 +68,16 @@ def load_meta(raw: dict[str, Any] | None) -> NodeMeta | None:
     if raw is None:
         return None
 
-    print(raw, raw.get("description"))
-
     return NodeMeta(
         description=raw.get("description"),
         deprecated=bool(raw.get("deprecated", False)),
     )
 
 
-def load_property(name: str, raw: RawProperty) -> PropertyDef:
+def load_property(name: str, raw: RawProperty | str) -> PropertyDef:
+    if isinstance(raw, str):
+        return PropertyDef(name=name, type=load_type_expr(cast(RawTypeDef, raw)))
+
     return PropertyDef(
         name=name,
         type=load_type_expr(cast(RawTypeDef, raw)),

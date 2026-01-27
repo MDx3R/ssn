@@ -57,7 +57,7 @@ class EnumTypeExpr(TypeExpr):
 class ArrayTypeExpr(TypeExpr):
     """Array type definition."""
 
-    items: TypeRef
+    items: TypeExpr
 
     def resolve(self, registry: TypeRegistry) -> None:
         self.items.resolve(registry)

@@ -30,7 +30,7 @@ class RawObjectType(TypedDict):
 
 class RawArrayType(TypedDict):
     type: Literal["array"]
-    items: str
+    items: RawTypeDef
     meta: NotRequired[dict[str, object]]
 
 
