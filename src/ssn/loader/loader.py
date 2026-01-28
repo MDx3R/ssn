@@ -17,7 +17,7 @@ from ssn.loader.types import (
     RawEnumType,
     RawObjectType,
     RawPrimitiveType,
-    RawProperty,
+    RawPropertyDef,
     RawSchema,
     RawTypeDef,
     RawTypeRef,
@@ -74,7 +74,7 @@ def load_meta(raw: dict[str, Any] | None) -> NodeMeta | None:
     )
 
 
-def load_property(name: str, raw: RawProperty | str) -> PropertyDef:
+def load_property(name: str, raw: RawPropertyDef) -> PropertyDef:
     if isinstance(raw, str):
         return PropertyDef(name=name, type=load_type_expr(cast(RawTypeDef, raw)))
 
@@ -132,6 +132,6 @@ def load_schema(raw: RawSchema) -> Schema:
         name: load_type(name, type_raw) for name, type_raw in raw_types.items()
     }
 
-    root = {name: load_type_expr(type) for name, type in raw["schema"].items()}
+    root = [load_property(name, type) for name, type in raw["schema"].items()]
 
     return Schema(version=raw["version"], types=types, root=root)

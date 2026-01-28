@@ -120,4 +120,4 @@ class Schema(ASTNode):
 
     version: str
     types: Mapping[str, TypeDef]
-    root: Mapping[str, TypeExpr]
+    root: Sequence[PropertyDef]

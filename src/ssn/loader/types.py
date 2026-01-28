@@ -50,9 +50,10 @@ RawTypeRef = RawPrimitiveType
 RawTypeDef = (
     RawObjectType | RawArrayType | RawEnumType | RawPrimitiveType | RawTypeRef | str
 )
+RawPropertyDef = RawProperty | str
 
 
 class RawSchema(TypedDict):
     version: str
     definitions: dict[str, dict[str, RawTypeDef]]
-    schema: dict[str, RawTypeDef]
+    schema: dict[str, RawPropertyDef]

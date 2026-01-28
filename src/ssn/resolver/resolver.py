@@ -9,5 +9,5 @@ def resolve_schema(schema: Schema, registry: TypeRegistry) -> None:
     for t in schema.types.values():
         t.expr.resolve(registry)
 
-    for ref in schema.root.values():
-        ref.resolve(registry)
+    for ref in schema.root:
+        ref.type.resolve(registry)
