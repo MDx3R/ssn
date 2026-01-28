@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ssn.registry import TypeRegistry
-    from ssn.visitor import ExprVisitor
+    from ssn.visitor import ExprVisitor, NodeVisitor
 
 
 @dataclass(slots=True)
@@ -23,10 +23,13 @@ class NodeMeta:
 
 
 @dataclass(slots=True, kw_only=True)
-class ASTNode:
+class ASTNode(ABC):
     """Base class for all AST nodes."""
 
     meta: NodeMeta | None = field(default=None)
+
+    @abstractmethod
+    def visit(self, visitor: NodeVisitor) -> None: ...
 
 
 class TypeExpr(ABC):
@@ -96,6 +99,9 @@ class TypeDef(ASTNode):
     name: str
     expr: TypeExpr
 
+    def visit(self, visitor: NodeVisitor) -> None:
+        visitor.visit_type_def(self)
+
 
 @dataclass(slots=True)
 class PrimitiveType(TypeDef):
@@ -113,6 +119,9 @@ class PropertyDef(ASTNode):
     required: bool = True
     nullable: bool = False
     default: object | None = None
+
+    def visit(self, visitor: NodeVisitor) -> None:
+        visitor.visit_property(self)
 
 
 @dataclass(slots=True)
@@ -139,3 +148,6 @@ class Schema(ASTNode):
     version: str
     types: Mapping[str, TypeDef]
     root: Sequence[PropertyDef]
+
+    def visit(self, visitor: NodeVisitor) -> None:
+        visitor.visit_schema(self)
