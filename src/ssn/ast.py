@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ssn.registry import TypeRegistry
+    from ssn.visitor import ExprVisitor
 
 
 @dataclass(slots=True)
@@ -31,6 +32,8 @@ class ASTNode:
 class TypeExpr(ABC):
     @abstractmethod
     def resolve(self, registry: TypeRegistry) -> None: ...
+    @abstractmethod
+    def visit(self, visior: ExprVisitor) -> None: ...
 
 
 @dataclass(slots=True)
@@ -42,6 +45,9 @@ class PrimitiveTypeExpr(TypeExpr):
     def resolve(self, registry: TypeRegistry) -> None:
         pass
 
+    def visit(self, visior: ExprVisitor) -> None:
+        visior.visit_primitive(self)
+
 
 @dataclass(slots=True)
 class EnumTypeExpr(TypeExpr):
@@ -51,6 +57,9 @@ class EnumTypeExpr(TypeExpr):
 
     def resolve(self, registry: TypeRegistry) -> None:
         pass
+
+    def visit(self, visior: ExprVisitor) -> None:
+        visior.visit_enum(self)
 
 
 @dataclass(slots=True)
@@ -62,6 +71,9 @@ class ArrayTypeExpr(TypeExpr):
     def resolve(self, registry: TypeRegistry) -> None:
         self.items.resolve(registry)
 
+    def visit(self, visior: ExprVisitor) -> None:
+        visior.visit_array(self)
+
 
 @dataclass(slots=True)
 class ObjectTypeExpr(TypeExpr):
@@ -72,6 +84,9 @@ class ObjectTypeExpr(TypeExpr):
     def resolve(self, registry: TypeRegistry) -> None:
         for prop in self.properties.values():
             prop.type.resolve(registry)
+
+    def visit(self, visior: ExprVisitor) -> None:
+        visior.visit_object(self)
 
 
 @dataclass(slots=True)
@@ -112,6 +127,9 @@ class TypeRef(TypeExpr):
         if self.resolved is not None:
             return
         self.resolved = registry.get(self.name)
+
+    def visit(self, visior: ExprVisitor) -> None:
+        visior.visit_ref(self)
 
 
 @dataclass(slots=True)
